@@ -49,4 +49,6 @@ public class UserService {
 
         return user;
     }
+
+    //TODO: function to update the user's password and another one for the user's email
 }

@@ -1,15 +1,19 @@
 package com.driveable.driveable.Models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.UUID;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+@Data
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
@@ -20,7 +24,7 @@ public class User {
     private String lastName;
     @Column(nullable = false)
     private int age;
-    @Transient
+    @Column(nullable = false)
     private String email;
     @Column(nullable = false)
     private String password;
@@ -35,6 +39,17 @@ public class User {
 
     public User(Long id, String firstName, String lastName, int age, String email, String password, HandicapType handicapType, TransmissionType transmissionType, Role role) {
         this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.password = password;
+        this.handicapType = handicapType;
+        this.transmissionType = transmissionType;
+        this.role = role;
+    }
+
+    public User(String firstName, String lastName, int age, String email, String password, HandicapType handicapType, TransmissionType transmissionType, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
@@ -85,8 +100,38 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {
@@ -118,17 +163,3 @@ public class User {
     }
 }
 
-enum HandicapType{
-    NONE
-}
-
-enum TransmissionType{
-    MANUAL,
-    AUTOMATIC
-}
-
-enum Role{
-    ADMIN,
-    USER,
-    INSTRUCTOR
-}
