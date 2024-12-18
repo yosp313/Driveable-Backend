@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/session")
+@RequestMapping("api/v1/sessions")
 public class SessionController {
     public final SessionService sessionService;
+
     @Autowired
     public SessionController(SessionService sessionService) {
         this.sessionService = sessionService;
@@ -23,6 +24,7 @@ public class SessionController {
     public List<Session> GetAllSessions(){
         return sessionService.findAll();
     }
+
     @GetMapping("/{id}")
     public Session GetSessionById(@PathVariable Long id){
         return sessionService.findSessionById(id);
