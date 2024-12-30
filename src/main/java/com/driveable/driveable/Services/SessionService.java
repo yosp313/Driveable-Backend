@@ -37,4 +37,9 @@ public class SessionService {
         Session session = findSessionById(id);
         sessionRepository.delete(session);
     }
+
+    public Session updateSession(Session session) {
+        sessionRepository.save(session);
+        return session;
+    }
 }
