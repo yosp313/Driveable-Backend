@@ -1,12 +1,12 @@
 package com.driveable.driveable.Controllers;
 
 import com.driveable.driveable.Models.Session;
+import com.driveable.driveable.Models.User;
 import com.driveable.driveable.Services.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,6 +28,28 @@ public class SessionController {
     @GetMapping("/{id}")
     public Session GetSessionById(@PathVariable Long id){
         return sessionService.findSessionById(id);
+    }
+
+    @PutMapping("/register/{id}")
+    public ResponseEntity.HeadersBuilder<?> RegisterSession(@PathVariable Long id){
+        Session session = sessionService.findSessionById(id);
+
+        if(session == null){
+            return ResponseEntity.notFound();
+        }
+
+        if(session.getIsRegistered()){
+            return ResponseEntity.badRequest();
+        }
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        session.setIsRegistered(true);
+        session.setUser(user);
+
+        Session updatedSession = sessionService.updateSession(session);
+
+        return (ResponseEntity.HeadersBuilder<?>) ResponseEntity.ok(updatedSession);
     }
 
 }
