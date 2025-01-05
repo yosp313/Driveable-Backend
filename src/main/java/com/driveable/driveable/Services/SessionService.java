@@ -28,11 +28,11 @@ public class SessionService {
         return session.orElse(null);
     }
 
-
     public Session createSession(Session session) {
         sessionRepository.save(session);
         return session;
     }
+
     public void deleteSession(Long id) {
         Session session = findSessionById(id);
         sessionRepository.delete(session);
