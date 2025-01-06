@@ -1,7 +1,6 @@
 package com.driveable.driveable.Controllers;
 
 import com.driveable.driveable.Models.Session;
-import com.driveable.driveable.Models.User;
 import com.driveable.driveable.Services.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
