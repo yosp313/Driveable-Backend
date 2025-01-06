@@ -10,24 +10,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/adminsessions")
+@RequestMapping("api/v1/admin-dashboard/sessions")
 public class AdminSessionController {
     public final SessionService sessionService;
     @Autowired
     public AdminSessionController(SessionService sessionService) {this.sessionService = sessionService;}
 
     @GetMapping
-    public List<Session> GetAllSessions(){
-        return sessionService.findAll();
+    public ResponseEntity<List<Session>> GetAllSessions(){
+        List<Session> sessions = sessionService.findAll();
+        return ResponseEntity.ok(sessions);
     }
 
     @GetMapping("/{id}")
-    public Session GetSessionById(@PathVariable Long id){
-        return sessionService.findSessionById(id);
+    public ResponseEntity<Session> GetSessionById(@PathVariable Long id){
+        Session session = sessionService.findSessionById(id);
+        return ResponseEntity.ok(session);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteSession(@PathVariable Long id){
+    public ResponseEntity<?> deleteSession(@PathVariable Long id){
         sessionService.deleteSession(id);
 
         return ResponseEntity.noContent().build();
