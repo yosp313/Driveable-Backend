@@ -13,43 +13,43 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/sessions")
 public class SessionController {
-    public final SessionService sessionService;
+  public final SessionService sessionService;
 
-    @Autowired
-    public SessionController(SessionService sessionService) {
-        this.sessionService = sessionService;
+  @Autowired
+  public SessionController(SessionService sessionService) {
+    this.sessionService = sessionService;
+  }
+
+  @GetMapping
+  public List<Session> GetAllSessions() {
+    return sessionService.findAll();
+  }
+
+  @GetMapping("/{id}")
+  public Session GetSessionById(@PathVariable Long id) {
+    return sessionService.findSessionById(id);
+  }
+
+  @PutMapping("/register/{id}")
+  public ResponseEntity.HeadersBuilder<?> RegisterSession(@PathVariable Long id) {
+    Session session = sessionService.findSessionById(id);
+
+    if (session == null) {
+      return ResponseEntity.notFound();
     }
 
-    @GetMapping
-    public List<Session> GetAllSessions(){
-        return sessionService.findAll();
+    if (session.getIsRegistered()) {
+      return ResponseEntity.badRequest();
     }
 
-    @GetMapping("/{id}")
-    public Session GetSessionById(@PathVariable Long id){
-        return sessionService.findSessionById(id);
-    }
+    User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    @PutMapping("/register/{id}")
-    public ResponseEntity.HeadersBuilder<?> RegisterSession(@PathVariable Long id){
-        Session session = sessionService.findSessionById(id);
+    session.setIsRegistered(true);
+    session.setUser(user);
 
-        if(session == null){
-            return ResponseEntity.notFound();
-        }
+    Session updatedSession = sessionService.updateSession(session);
 
-        if(session.getIsRegistered()){
-            return ResponseEntity.badRequest();
-        }
-
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        session.setIsRegistered(true);
-        session.setUser(user);
-
-        Session updatedSession = sessionService.updateSession(session);
-
-        return (ResponseEntity.HeadersBuilder<?>) ResponseEntity.ok(updatedSession);
-    }
+    return (ResponseEntity.HeadersBuilder<?>) ResponseEntity.ok(updatedSession);
+  }
 
 }

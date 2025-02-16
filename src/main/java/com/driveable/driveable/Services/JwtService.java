@@ -17,8 +17,10 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private final String secretKey = "f66c30a11898b17133755179dd5c62a14a70ee4e10255bb4ee6fea5cea639d9ee2df5e04f2518f088c969ef9b99e898d195e6447efca52449f35b28df22226f4d7f4f271090e700dcc86c6e1ebd2e8b1405f2121699746854a789fd922292f9f7a8bba2c743e84d2a152529e3d418b563cc64868186263055e091e75e030a90412beb5c5f0ae8a648808b7219841a9ff47fe46d06cef291f133495fb565750c397cd8f874d5d609e7e188c2429e951af28e0c3ecbb38f6c85bd0ecebc13e555c24c2ad8c5f2c2ad790465bd9ed9263d1c65392942099f2427316b9196bd7c66f9c48c3c3ea882c79cf8e6d4f8402cb705949abe8e22187e3af091712948a8d65";
-    private final long jwtExpiration = 3600000;
+    @Value("${security.jwt.secret}")
+    private String secretKey;
+    @Value("${security.jwt.expiration-time}")
+    private long jwtExpiration;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
