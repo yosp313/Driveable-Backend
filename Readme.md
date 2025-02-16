@@ -6,4 +6,4 @@
 
 ## Todo
 
-- [] Implement the mailing a day before the session begins
+- [ ] Implement the mailing a day before the session begins
