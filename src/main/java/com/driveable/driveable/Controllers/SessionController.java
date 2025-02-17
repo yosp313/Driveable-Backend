@@ -38,14 +38,7 @@ public class SessionController {
       return ResponseEntity.notFound();
     }
 
-    if (session.getIsRegistered()) {
-      return ResponseEntity.badRequest();
-    }
-
     User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-    session.setIsRegistered(true);
-    session.setUser(user);
 
     Session updatedSession = sessionService.updateSession(session);
 
