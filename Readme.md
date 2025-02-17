@@ -36,20 +36,16 @@ The application enables users to register for virtual reality driving training s
 
 ### Users
 
-```
 ```sql
-```
-
 id (PK) | email | password_hash | created_at
-
-`````
 ```
+
 
 ### Sessions
-```
-id (PK) | datetime | duration_minutes | max_capacity | price | instructor | created_at
-```sql
 
+```sql
+id (PK) | datetime | duration_minutes | max_capacity | price | instructor | created_at
+```
 
 ### Registrations
 
@@ -57,54 +53,58 @@ id (PK) | datetime | duration_minutes | max_capacity | price | instructor | crea
 id (PK) | user_id (FK) | session_id (FK) | payment_status | score | payment_id | created_at
 ```
 
-### Relationships:
+
+### Relationships
 
     One user → Many registrations
 
     One session → Many registrations
 
 ## Implementation Details
+
 ### Backend (Spring Boot)
 
-    Authentication
+#### Authentication
 
-        Spring Security with JWT
+ - Spring Security with JWT
 
-        Password hashing using BCrypt
+ - Password hashing using BCrypt
 
-    Payment Flow
+#### Payment Flow
 
-```
+
+```mermaid
 sequenceDiagram
     User->>Backend: Select session
     Backend->>Lemon Squeezy: Create payment link
     Lemon Squeezy->>User: Redirect to payment
     Lemon Squeezy->>Backend: Webhook (payment success/failure)
     Backend->>DB: Update registration status
-```mermaid
+```
 
 
-    Score Updates
 
-        Admins update scores via dashboard (PATCH /registrations/{id})
+#### Score Updates
 
-        Mobile app polls/WebSocket for score changes
+- Admins update scores via dashboard (PATCH /registrations/{id})
+
+- Mobile app polls/WebSocket for score changes
 
 ## API Endpoints
 
-    Auth
+### Auth
 
         POST /auth/signup - Create account
 
         POST /auth/login - Get JWT token
 
-    Sessions
+### Sessions
 
         GET /sessions - List available sessions
 
         POST /sessions (Admin) - Create new session
 
-    Registrations
+### Registrations
 
         POST /registrations - Initiate session booking
 
@@ -112,21 +112,21 @@ sequenceDiagram
 
 ## Privacy & Security
 
-    All sensitive data (passwords, payment info) encrypted
+- All sensitive data (passwords, payment info) encrypted
 
-    Lemon Squeezy handles PCI compliance
+- Lemon Squeezy handles PCI compliance
 
-    JWT token expiration (1 hour)
+- JWT token expiration (1 hour)
 
-    Role-based access control (user vs admin endpoints)
+- Role-based access control (user vs admin endpoints)
 
 ## Style Guide
 
 ### Spring Boot:
 
-    Layered architecture (controller → service → repository)
+- Layered architecture (controller → service → repository)
 
-    DTO pattern for API requests/responses
+- DTO pattern for API requests/responses
 
 ### Flutter:
 
