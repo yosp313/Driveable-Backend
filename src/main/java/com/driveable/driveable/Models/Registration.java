@@ -26,10 +26,20 @@ public class Registration {
   private Session session;
 
   @Column(nullable = false)
-  private boolean isPaid;
+  private boolean isPaid = false;
 
   @Column(nullable = false)
-  private int score;
+  private int score = 0;
+
+  public Registration() {
+  }
+
+  public Registration(User user, Session session, boolean isPaid, int score) {
+    this.user = user;
+    this.session = session;
+    this.isPaid = isPaid;
+    this.score = score;
+  }
 
   public Long getId() {
     return id;
