@@ -12,11 +12,11 @@ import com.driveable.driveable.Repositories.RegistrationRepository;
 
 @Service
 public class RegistrationService {
-  private RegistrationRepository repository;
+  private RegistrationRepository regRepo;
 
   @Autowired
-  public RegistrationService(RegistrationRepository repository) {
-    this.repository = repository;
+  public RegistrationService(RegistrationRepository regRepo) {
+    this.regRepo = regRepo;
   }
 
   public Registration registerSession(Session session, User user) {
@@ -26,7 +26,7 @@ public class RegistrationService {
     registration.setUser(user);
 
     try {
-      repository.save(registration);
+      regRepo.save(registration);
       return registration;
     } catch (Exception e) {
       e.printStackTrace();
@@ -34,15 +34,16 @@ public class RegistrationService {
     }
   }
 
-  public List<Registration> findAll() {
-    return repository.findAll();
+  public List<Registration> findAll(User user) {
+    Long userId = user.getId();
+    return regRepo.findByUserId(userId);
   }
 
   public Registration findRegistrationById(Long id) {
-    return repository.findById(id).orElse(null);
+    return regRepo.findById(id).orElse(null);
   }
 
   public void deleteRegistrationById(Long id) {
-    repository.deleteById(id);
+    regRepo.deleteById(id);
   }
 }

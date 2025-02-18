@@ -3,12 +3,14 @@ package com.driveable.driveable.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.driveable.driveable.Models.Registration;
+import com.driveable.driveable.Models.User;
 import com.driveable.driveable.Services.RegistrationService;
 import com.driveable.driveable.Utils.CustomError;
 
@@ -23,8 +25,8 @@ public class RegisterationController {
   }
 
   @GetMapping
-  public ResponseEntity<?> GetAllRegistrations() {
-    return ResponseEntity.ok(registrationService.findAll());
+  public ResponseEntity<?> GetAllRegistrations(@AuthenticationPrincipal User user) {
+    return ResponseEntity.ok(registrationService.findAll(user));
   }
 
   @GetMapping("/{id}")
