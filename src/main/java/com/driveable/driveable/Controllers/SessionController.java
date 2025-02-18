@@ -44,7 +44,7 @@ public class SessionController {
     return ResponseEntity.ok(sess);
   }
 
-  @PostMapping("/register/{id}")
+  @PostMapping("/{id}/register")
   public ResponseEntity<?> RegisterSession(@PathVariable Long id) {
     Session session = sessionService.findSessionById(id);
 
