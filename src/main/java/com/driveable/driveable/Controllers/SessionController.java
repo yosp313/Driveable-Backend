@@ -1,9 +1,14 @@
 package com.driveable.driveable.Controllers;
 
+import com.driveable.driveable.Models.Registration;
 import com.driveable.driveable.Models.Session;
 import com.driveable.driveable.Models.User;
+import com.driveable.driveable.Services.RegistrationService;
 import com.driveable.driveable.Services.SessionService;
+import com.driveable.driveable.Utils.CustomError;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +19,12 @@ import java.util.List;
 @RequestMapping("api/v1/sessions")
 public class SessionController {
   public final SessionService sessionService;
+  private final RegistrationService registrationService;
 
   @Autowired
-  public SessionController(SessionService sessionService) {
+  public SessionController(SessionService sessionService, RegistrationService registrationService) {
     this.sessionService = sessionService;
+    this.registrationService = registrationService;
   }
 
   @GetMapping
@@ -26,30 +33,36 @@ public class SessionController {
   }
 
   @GetMapping("/{id}")
-  public Session GetSessionById(@PathVariable Long id) {
-    return sessionService.findSessionById(id);
+  public ResponseEntity<?> GetSessionById(@PathVariable Long id) {
+    Session sess = sessionService.findSessionById(id);
+
+    if (sess == null) {
+      CustomError err = new CustomError(HttpStatus.NOT_FOUND.value(), "Session not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+    }
+
+    return ResponseEntity.ok(sess);
   }
 
-  @PutMapping("/register/{id}")
-  public ResponseEntity.HeadersBuilder<?> RegisterSession(@PathVariable Long id) {
+  @PostMapping("/{id}/register")
+  public ResponseEntity<?> RegisterSession(@PathVariable Long id) {
     Session session = sessionService.findSessionById(id);
 
     if (session == null) {
-      return ResponseEntity.notFound();
-    }
-
-    if (session.getIsRegistered()) {
-      return ResponseEntity.badRequest();
+      CustomError err = new CustomError(HttpStatus.NOT_FOUND.value(), "Session not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }
 
     User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    session.setIsRegistered(true);
-    session.setUser(user);
+    Registration registration = registrationService.registerSession(session, user);
 
-    Session updatedSession = sessionService.updateSession(session);
+    if (registration == null) {
+      CustomError err = new CustomError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to register session");
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
+    }
 
-    return (ResponseEntity.HeadersBuilder<?>) ResponseEntity.ok(updatedSession);
+    return ResponseEntity.status(HttpStatus.CREATED).body(registration);
   }
 
 }
