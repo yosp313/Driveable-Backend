@@ -11,6 +11,33 @@ services:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+    networks:
+      - driveable-net
+
+  driveable-backend:
+    build: .
+    container_name: driveable-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://drivable-db:3306/drivable?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 10
+      SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: 20000
+      SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT: 300000
+      SECURITY_JWT_SECRET: f66c30a11898b17133755179dd5c62a14a70ee4e10255bb4ee6fea5cea639d9ee2df5e04f2518f088c969ef9b99e898d195e6447efca52449f35b28df22226f4d7f4f271090e700dcc86c6e1ebd2e8b1405f21216997468...
+      SECURITY_JWT_EXPIRATION_TIME: 3600000
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - driveable-net
 
 volumes:
   mysql-data:
+
+networks:
+  driveable-net:
+    driver: bridge
