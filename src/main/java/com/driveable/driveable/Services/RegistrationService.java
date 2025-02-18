@@ -1,5 +1,7 @@
 package com.driveable.driveable.Services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +32,17 @@ public class RegistrationService {
       e.printStackTrace();
       return null;
     }
+  }
+
+  public List<Registration> findAll() {
+    return repository.findAll();
+  }
+
+  public Registration findRegistrationById(Long id) {
+    return repository.findById(id).orElse(null);
+  }
+
+  public void deleteRegistrationById(Long id) {
+    repository.deleteById(id);
   }
 }
