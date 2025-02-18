@@ -10,45 +10,46 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    public final UserRepository userRepository;
+  public final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  @Autowired
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
+  public List<User> findAll() {
+    return userRepository.findAll();
+  }
 
-    public User createUser(User user) {
-        userRepository.save(user);
+  public User createUser(User user) {
+    userRepository.save(user);
 
-        return user;
-    }
+    return user;
+  }
 
-    public void deleteUser(Long id) {
-        User user = findUserById(id);
+  public void deleteUser(Long id) {
+    User user = findUserById(id);
 
-        userRepository.delete(user);
-    }
+    userRepository.delete(user);
+  }
 
-    public User findUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
+  public User findUserById(Long id) {
+    Optional<User> user = userRepository.findById(id);
 
-        return user.orElse(null);
-    }
+    return user.orElse(null);
+  }
 
-    public User updateUserName(Long id, String firstName, String lastName) {
-        User user = findUserById(id);
+  public User updateUserName(Long id, String firstName, String lastName) {
+    User user = findUserById(id);
 
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
+    user.setFirstName(firstName);
+    user.setLastName(lastName);
 
-        userRepository.save(user);
+    userRepository.save(user);
 
-        return user;
-    }
+    return user;
+  }
 
-    //TODO: function to update the user's password and another one for the user's email
+  // TODO: function to update the user's password and another one for the user's
+  // email
 }
