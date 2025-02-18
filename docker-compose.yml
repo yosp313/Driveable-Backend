@@ -15,7 +15,9 @@ services:
       - driveable-net
 
   driveable-backend:
-    build: .
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     container_name: driveable-backend
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://drivable-db:3306/drivable?useSSL=false&allowPublicKeyRetrieval=true
