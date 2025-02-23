@@ -38,9 +38,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("api/v1/auth/**").permitAll() // Public endpoints
             .requestMatchers("/swagger-ui/**").permitAll()
-            .requestMatchers("/v3/**").permitAll()
             .requestMatchers("api/v1/admin-dashboard/**").hasRole("ADMIN")
-            .anyRequest().authenticated() // Secure all other endpoints
+            .anyRequest().fullyAuthenticated() // Secure all other endpoints
         )
         .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session policy
