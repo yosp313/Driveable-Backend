@@ -39,6 +39,10 @@ public class RegistrationService {
     return regRepo.findByUserId(userId);
   }
 
+  public List<Registration> findAll() {
+    return regRepo.findAll();
+  }
+
   public Registration findRegistrationById(Long id) {
     return regRepo.findById(id).orElse(null);
   }
