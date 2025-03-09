@@ -41,4 +41,9 @@ public class SessionService {
     sessionRepository.save(session);
     return session;
   }
+
+  public List<Session> searchForASession(String searchText) {
+    Optional<List<Session>> sessions = sessionRepository.searchForASession(searchText);
+    return sessions.orElse(null);
+  }
 }

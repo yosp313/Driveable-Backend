@@ -37,6 +37,7 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("api/v1/auth/**").permitAll() // Public endpoints
+            .requestMatchers("api/v1/auth/login").permitAll() // Public endpoints
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("api/v1/admin-dashboard/**").hasRole("ADMIN")
             .anyRequest().fullyAuthenticated() // Secure all other endpoints

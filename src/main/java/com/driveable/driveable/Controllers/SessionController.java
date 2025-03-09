@@ -32,6 +32,18 @@ public class SessionController {
     return sessionService.findAll();
   }
 
+  @GetMapping("/search")
+  public ResponseEntity<?> SearchSessions(@RequestParam String query) {
+    List<Session> sessions = sessionService.searchForASession(query);
+
+    if (sessions == null) {
+      CustomError err = new CustomError(HttpStatus.NOT_FOUND.value(), "No sessions found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+    }
+
+    return ResponseEntity.ok(sessions);
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity<?> GetSessionById(@PathVariable Long id) {
     Session sess = sessionService.findSessionById(id);
