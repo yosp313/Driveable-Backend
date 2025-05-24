@@ -37,7 +37,6 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("api/v1/auth/**").permitAll() // Public endpoints
-            .requestMatchers("api/v1/auth/login").permitAll() // Public endpoints
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("api/v1/admin-dashboard/**").hasRole("ADMIN")
             .anyRequest().fullyAuthenticated() // Secure all other endpoints
@@ -56,9 +55,9 @@ public class SecurityConfig {
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.setAllowedOrigins(List.of("http://localhost:8005"));
-    configuration.setAllowedMethods(List.of("GET", "POST"));
-    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    configuration.setAllowedOrigins(List.of("*"));
+    configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "OPTIONS"));
+    configuration.setAllowedHeaders(List.of("*"));
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
