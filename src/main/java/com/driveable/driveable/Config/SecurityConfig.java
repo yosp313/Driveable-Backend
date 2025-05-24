@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -34,9 +33,11 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http
-        .csrf(AbstractHttpConfigurer::disable)
+        .csrf(c -> {
+          c.disable();
+        })
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("api/v1/auth/**").permitAll() // Public endpoints
+            .requestMatchers("/api/v1/auth/**").permitAll()
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("api/v1/admin-dashboard/**").hasRole("ADMIN")
             .anyRequest().fullyAuthenticated() // Secure all other endpoints
@@ -55,8 +56,8 @@ public class SecurityConfig {
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
-    configuration.setAllowedOrigins(List.of("*"));
-    configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "OPTIONS"));
+    configuration.setAllowedOrigins(List.of("http://localhost:8005", "http://localhost:8081"));
+    configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
     configuration.setAllowedHeaders(List.of("*"));
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

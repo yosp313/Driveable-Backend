@@ -1,15 +1,15 @@
 package com.driveable.driveable.Services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.driveable.driveable.Dtos.LoginUserDto;
 import com.driveable.driveable.Dtos.RegisterUserDto;
 import com.driveable.driveable.Models.User;
 import com.driveable.driveable.Repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
@@ -46,12 +46,19 @@ public class AuthService {
   }
 
   public User login(LoginUserDto input) {
+
+    User user = userRepository.findByEmail(input.getEmail())
+        .orElse(null);
+
+    if (user == null) {
+      return null;
+    }
+
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             input.getEmail(),
             input.getPassword()));
 
-    return userRepository.findByEmail(input.getEmail())
-        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    return user;
   }
 }

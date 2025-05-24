@@ -35,7 +35,7 @@ public class AuthController {
 
     if (registerdUser == null) {
       CustomError customError = new CustomError(400, "A user with this email already exists.");
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customError);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(customError);
     }
 
     String jwtToken = jwtService.generateToken(registerdUser);
@@ -46,8 +46,13 @@ public class AuthController {
   }
 
   @PostMapping(value = "/login", produces = "application/json")
-  public ResponseEntity<LoginResponseDto> login(@RequestBody LoginUserDto loginUserDto) {
+  public ResponseEntity<?> login(@RequestBody LoginUserDto loginUserDto) {
     User authenticatedUser = authService.login(loginUserDto);
+
+    if (authenticatedUser == null) {
+      CustomError customError = new CustomError(400, "Invalid email or password.");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(customError);
+    }
 
     String jwtToken = jwtService.generateToken(authenticatedUser);
 
