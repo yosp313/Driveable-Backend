@@ -13,40 +13,45 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
+  @Autowired
+  public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+      AuthenticationManager authenticationManager) {
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.authenticationManager = authenticationManager;
+  }
+
+  public User signup(RegisterUserDto input) {
+    User user = new User(
+        input.getFirstName(),
+        input.getLastName(),
+        input.getAge(),
+        input.getEmail(),
+        passwordEncoder.encode(input.getPassword()),
+        input.getTransmissionType(),
+        input.getRole());
+
+    User isExistingUser = userRepository.findByEmail(input.getEmail())
+        .orElse(null);
+
+    if (isExistingUser != null) {
+      return null;
     }
 
-    public User signup(RegisterUserDto input){
-        User user = new User(
-                input.getFirstName(),
-                input.getLastName(),
-                input.getAge(),
-                input.getEmail(),
-                passwordEncoder.encode(input.getPassword()),
-                input.getHandicapType(),
-                input.getTransmissionType(),
-                input.getRole()
-        );
+    return userRepository.save(user);
+  }
 
-        return userRepository.save(user);
-    }
+  public User login(LoginUserDto input) {
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(
+            input.getEmail(),
+            input.getPassword()));
 
-    public User login(LoginUserDto input){
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        input.getEmail(),
-                        input.getPassword()
-                )
-        );
-
-        return userRepository.findByEmail(input.getEmail()).orElseThrow(()-> new UsernameNotFoundException("User not found"));
-    }
+    return userRepository.findByEmail(input.getEmail())
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+  }
 }
