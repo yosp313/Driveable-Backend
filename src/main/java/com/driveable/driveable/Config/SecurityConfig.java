@@ -33,6 +33,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(c -> {
           c.disable();
         })
@@ -40,7 +41,7 @@ public class SecurityConfig {
             .requestMatchers("/api/v1/auth/**").permitAll()
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("/v3/api-docs/**").permitAll()
-            .requestMatchers("api/v1/admin-dashboard/**").hasRole("ADMIN")
+            .requestMatchers("/api/v1/admin-dashboard/**").hasRole("ADMIN")
             .anyRequest().fullyAuthenticated() // Secure all other endpoints
         )
         .sessionManagement(session -> session

@@ -35,19 +35,23 @@ public class Registration {
   private int score = 0;
 
   @Column(nullable = false)
-  private TransmissionType transmissionType;
+  private String feedback = "";
+
+  @Column(nullable = false)
+  private TransmissionType transmissionType = TransmissionType.AUTOMATIC;
 
   public Registration() {
   }
 
   public Registration(Long id, User user, Session session, boolean isPaid, boolean isCompleted, int score,
-      TransmissionType transmissionType) {
+      String feedback, TransmissionType transmissionType) {
     this.id = id;
     this.user = user;
     this.session = session;
     this.isPaid = isPaid;
     this.isCompleted = isCompleted;
     this.score = score;
+    this.feedback = feedback;
     this.transmissionType = transmissionType;
   }
 
@@ -97,6 +101,14 @@ public class Registration {
 
   public void setScore(int score) {
     this.score = score;
+  }
+
+  public String getFeedback() {
+    return feedback;
+  }
+
+  public void setFeedback(String feedback) {
+    this.feedback = feedback;
   }
 
   public TransmissionType getTransmissionType() {
