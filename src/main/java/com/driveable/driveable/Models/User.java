@@ -28,8 +28,6 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private String password;
   @Column(nullable = false)
-  private TransmissionType transmissionType;
-  @Column(nullable = false)
   private Role role;
 
   public User() {
@@ -43,7 +41,6 @@ public class User implements UserDetails {
     this.age = age;
     this.email = email;
     this.password = password;
-    this.transmissionType = transmissionType;
     this.role = role;
   }
 
@@ -54,7 +51,6 @@ public class User implements UserDetails {
     this.age = age;
     this.email = email;
     this.password = password;
-    this.transmissionType = transmissionType;
     this.role = role;
   }
 
@@ -134,14 +130,6 @@ public class User implements UserDetails {
 
   public void setPassword(String password) {
     this.password = password;
-  }
-
-  public TransmissionType getTransmissionType() {
-    return transmissionType;
-  }
-
-  public void setTransmissionType(TransmissionType transmissionType) {
-    this.transmissionType = transmissionType;
   }
 
   public Role getRole() {

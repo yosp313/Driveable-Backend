@@ -29,16 +29,26 @@ public class Registration {
   private boolean isPaid = false;
 
   @Column(nullable = false)
+  private boolean isCompleted = false;
+
+  @Column(nullable = false)
   private int score = 0;
+
+  @Column(nullable = false)
+  private TransmissionType transmissionType;
 
   public Registration() {
   }
 
-  public Registration(User user, Session session, boolean isPaid, int score) {
+  public Registration(Long id, User user, Session session, boolean isPaid, boolean isCompleted, int score,
+      TransmissionType transmissionType) {
+    this.id = id;
     this.user = user;
     this.session = session;
     this.isPaid = isPaid;
+    this.isCompleted = isCompleted;
     this.score = score;
+    this.transmissionType = transmissionType;
   }
 
   public Long getId() {
@@ -73,12 +83,28 @@ public class Registration {
     this.isPaid = isPaid;
   }
 
+  public boolean isCompleted() {
+    return isCompleted;
+  }
+
+  public void setCompleted(boolean isCompleted) {
+    this.isCompleted = isCompleted;
+  }
+
   public int getScore() {
     return score;
   }
 
   public void setScore(int score) {
     this.score = score;
+  }
+
+  public TransmissionType getTransmissionType() {
+    return transmissionType;
+  }
+
+  public void setTransmissionType(TransmissionType transmissionType) {
+    this.transmissionType = transmissionType;
   }
 
 }
