@@ -1,5 +1,6 @@
 package com.driveable.driveable.Models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,11 +18,11 @@ public class Registration {
   @Column(nullable = false, unique = true)
   private Long id;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name = "user_id", nullable = false) // Foreign Key to Session
   private User user;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name = "session_id", nullable = false) // Foreign Key to Session
   private Session session;
 

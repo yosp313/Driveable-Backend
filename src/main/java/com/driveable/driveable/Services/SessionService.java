@@ -33,8 +33,7 @@ public class SessionService {
   }
 
   public void deleteSession(Long id) {
-    Session session = findSessionById(id);
-    sessionRepository.delete(session);
+    sessionRepository.deleteById(id);
   }
 
   public Session updateSession(Session session) {
