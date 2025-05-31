@@ -1,13 +1,23 @@
 package com.driveable.driveable.Models;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "users")
@@ -29,6 +39,10 @@ public class User implements UserDetails {
   private String password;
   @Column(nullable = false)
   private Role role;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+  @JsonIgnore
+  private List<Registration> registrations;
 
   public User() {
   }
@@ -139,4 +153,5 @@ public class User implements UserDetails {
   public void setRole(Role role) {
     this.role = role;
   }
+
 }

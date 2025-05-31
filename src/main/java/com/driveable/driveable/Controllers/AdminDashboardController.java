@@ -2,6 +2,9 @@ package com.driveable.driveable.Controllers;
 
 import com.driveable.driveable.Models.User;
 import com.driveable.driveable.Services.UserService;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +42,7 @@ public class AdminDashboardController {
   }
 
   @DeleteMapping("/{id}")
+  @Transactional
   public ResponseEntity<User> DeleteUser(@PathVariable Long id) {
     userService.deleteUser(id);
 

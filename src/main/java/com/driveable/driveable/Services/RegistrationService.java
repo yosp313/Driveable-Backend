@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.driveable.driveable.Models.Registration;
 import com.driveable.driveable.Models.Session;
@@ -11,6 +12,7 @@ import com.driveable.driveable.Models.User;
 import com.driveable.driveable.Repositories.RegistrationRepository;
 
 @Service
+@Transactional
 public class RegistrationService {
   private RegistrationRepository regRepo;
 

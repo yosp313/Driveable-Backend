@@ -120,7 +120,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
   private List<User> seedUsers() {
     // Create mixed role users: 15 regular users, 2 admins, 3 instructors
-    List<User> users = userFactory.createMixedRoleUsers(15, 2, 3);
+    List<User> users = userFactory.createMixedRoleUsers(5, 1, 0);
 
     // Create some specific test users
     users.add(userFactory.createUserWithSpecificData("John", "Doe", "john.doe@test.com", Role.USER));

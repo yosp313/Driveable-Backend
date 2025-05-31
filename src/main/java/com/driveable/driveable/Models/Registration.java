@@ -1,14 +1,17 @@
 package com.driveable.driveable.Models;
 
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "registrations")
@@ -18,12 +21,16 @@ public class Registration {
   @Column(nullable = false, unique = true)
   private Long id;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
-  @JoinColumn(name = "user_id", nullable = false) // Foreign Key to Session
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  @OnDelete(action = OnDeleteAction.CASCADE)  // Add this
+  @JsonIgnore
   private User user;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
-  @JoinColumn(name = "session_id", nullable = false) // Foreign Key to Session
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "session_id", nullable = false)
+  @OnDelete(action = OnDeleteAction.CASCADE)  // Add this
+  @JsonIgnore
   private Session session;
 
   @Column(nullable = false)
