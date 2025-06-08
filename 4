@@ -68,21 +68,9 @@ public class AuthController {
   }
 
   @PostMapping(value = "/refresh", produces = "application/json")
-  public ResponseEntity<?> refresh(@RequestBody Map<String, String> request) {
+  public ResponseEntity<?> refresh(@RequestBody Map<String, String> request){
     String refreshToken = request.get("refreshToken");
 
-    RefreshToken token = refreshTokenService.findByToken(refreshToken)
-        .orElseThrow(() -> new RuntimeException("Refresh token not found"));
-
-    if (token.getExpiryDate().isBefore(java.time.Instant.now())) {
-      refreshTokenService.deleteByUser(token.getUser());
-
-      CustomError customError = new CustomError(400, "Refresh token has expired.");
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(customError);
-    }
-
-    String newAccessToken = jwtService.generateToken(token.getUser());
-
-    return ResponseEntity.ok(new LoginResponseDto(jwtService.getExpirationTime(), newAccessToken));
+    RefreshToken token = refreshTokenSer
   }
 }
