@@ -1,6 +1,5 @@
 package com.driveable.driveable.Models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,16 +20,14 @@ public class Registration {
   @Column(nullable = false, unique = true)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", nullable = false)
-  @OnDelete(action = OnDeleteAction.CASCADE)  // Add this
-  @JsonIgnore
+  @OnDelete(action = OnDeleteAction.CASCADE) // Add this
   private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "session_id", nullable = false)
-  @OnDelete(action = OnDeleteAction.CASCADE)  // Add this
-  @JsonIgnore
+  @OnDelete(action = OnDeleteAction.CASCADE) // Add this
   private Session session;
 
   @Column(nullable = false)
