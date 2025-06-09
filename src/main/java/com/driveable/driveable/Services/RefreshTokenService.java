@@ -4,8 +4,10 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.driveable.driveable.Models.RefreshToken;
 import com.driveable.driveable.Models.User;
@@ -19,11 +21,15 @@ public class RefreshTokenService {
 
   private final RefreshTokenRepository refreshTokenRepository;
 
+  @Autowired
   public RefreshTokenService(RefreshTokenRepository refreshTokenRepository) {
     this.refreshTokenRepository = refreshTokenRepository;
   }
 
+  @Transactional
   public RefreshToken createRefreshToken(User user) {
+    refreshTokenRepository.deleteByUser(user);
+
     RefreshToken refreshToken = new RefreshToken();
     refreshToken.setUser(user);
     refreshToken.setExpiryDate(Instant.now().plusMillis(refreshExpirationMs));

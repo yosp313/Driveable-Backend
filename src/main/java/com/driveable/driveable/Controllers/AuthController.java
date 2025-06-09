@@ -61,8 +61,12 @@ public class AuthController {
     }
 
     String jwtToken = jwtService.generateToken(authenticatedUser);
+    RefreshToken refreshToken = refreshTokenService.createRefreshToken(authenticatedUser);
 
-    LoginResponseDto loginResponseDto = new LoginResponseDto(jwtService.getExpirationTime(), jwtToken);
+    LoginResponseDto loginResponseDto = new LoginResponseDto(jwtToken,
+        jwtService.getExpirationTime(),
+        refreshToken.getExpiryDate(),
+        refreshToken.getToken());
 
     return ResponseEntity.ok(loginResponseDto);
   }
@@ -83,6 +87,10 @@ public class AuthController {
 
     String newAccessToken = jwtService.generateToken(token.getUser());
 
-    return ResponseEntity.ok(new LoginResponseDto(jwtService.getExpirationTime(), newAccessToken));
+    return ResponseEntity.ok(new LoginResponseDto(
+        newAccessToken,
+        jwtService.getExpirationTime(),
+        token.getExpiryDate(),
+        token.getToken()));
   }
 }
