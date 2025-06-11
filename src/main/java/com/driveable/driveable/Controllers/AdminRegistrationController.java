@@ -58,7 +58,7 @@ public class AdminRegistrationController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }
 
-    registrationService.deleteRegistrationById(id);
+    registrationService.deleteRegistration(registration);
     return ResponseEntity.ok("Registration deleted");
   }
 

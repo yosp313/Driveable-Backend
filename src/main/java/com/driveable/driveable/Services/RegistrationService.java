@@ -49,7 +49,7 @@ public class RegistrationService {
     return regRepo.findById(id).orElse(null);
   }
 
-  public void deleteRegistrationById(Long id) {
-    regRepo.deleteById(id);
+  public void deleteRegistration(Registration reg) {
+    regRepo.delete(reg);
   }
 }

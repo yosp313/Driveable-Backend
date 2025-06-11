@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +42,7 @@ public class RegisterationController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> DeleteRegistrationById(Long id) {
+  public ResponseEntity<?> DeleteRegistrationById(@PathVariable Long id) {
     Registration reg = registrationService.findRegistrationById(id);
 
     if (reg == null) {
@@ -49,7 +50,9 @@ public class RegisterationController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }
 
-    registrationService.deleteRegistrationById(id);
+    registrationService.deleteRegistration(reg);
+    System.out.println("Registration deleted: " + reg.getSession().getScenario().getName() + " - "
+        + reg.getUser().getFirstName() + " " + reg.getUser().getLastName());
     return ResponseEntity.ok("Registration deleted");
   }
 
