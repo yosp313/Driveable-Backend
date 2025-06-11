@@ -31,7 +31,7 @@ public class RegisterationController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<?> GetRegistrationById(Long id) {
+  public ResponseEntity<?> GetRegistrationById(@PathVariable Long id) {
     Registration reg = registrationService.findRegistrationById(id);
 
     if (reg == null) {
