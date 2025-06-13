@@ -27,10 +27,10 @@ public class RegistrationService {
   public Registration registerSession(Session session, User user) {
     Registration registration = new Registration();
 
-    if (session.getParicipantsCount() >= session.getMaxParticipants()) {
+    if (session.getParticipantsCount() >= session.getMaxParticipants()) {
       session.setAvailable(false);
     }
-    session.setParicipantsCount(session.getParicipantsCount() + 1);
+    session.setParticipantsCount(session.getParticipantsCount() + 1);
 
     registration.setSession(session);
     registration.setUser(user);

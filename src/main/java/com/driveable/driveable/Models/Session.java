@@ -1,6 +1,7 @@
 package com.driveable.driveable.Models;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,39 +36,45 @@ public class Session {
 
   @Column(nullable = false)
   private Integer maxParticipants;
-
   @Column(nullable = false)
-  private Integer paricipantsCount = 0;
+  private Integer participantsCount = 0;
 
   @Column(nullable = false)
   private String location;
 
   @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
   @JsonIgnore
-  private Registration registrations;
+  private List<Registration> registrations;
 
   public Session() {
   }
-
   public Session(Scenario scenario, Date date, Integer maxParticipants,
-      String location, Registration registrations) {
+      String location, List<Registration> registrations) {
     this.scenario = scenario;
     this.date = date;
     this.isAvailable = true;
     this.maxParticipants = maxParticipants;
-    this.paricipantsCount = 0;
+    this.participantsCount = 0;
     this.location = location;
     this.registrations = registrations;
   }
-
+  public Session(Scenario scenario, Date date, Integer maxParticipants,
+      String location) {
+    this.scenario = scenario;
+    this.date = date;
+    this.isAvailable = true;
+    this.maxParticipants = maxParticipants;
+    this.participantsCount = 0;
+    this.location = location;
+  }
   public Session(Long id, Scenario scenario, Date date, Integer maxParticipants, String location,
-      Registration registrations) {
+      List<Registration> registrations) {
     this.id = id;
     this.scenario = scenario;
     this.date = date;
     this.isAvailable = true;
     this.maxParticipants = maxParticipants;
-    this.paricipantsCount = 0;
+    this.participantsCount = 0;
     this.location = location;
     this.registrations = registrations;
   }
@@ -111,13 +118,12 @@ public class Session {
   public void setMaxParticipants(Integer maxParticipants) {
     this.maxParticipants = maxParticipants;
   }
-
-  public Integer getParicipantsCount() {
-    return paricipantsCount;
+  public Integer getParticipantsCount() {
+    return participantsCount;
   }
 
-  public void setParicipantsCount(Integer paricipantsCount) {
-    this.paricipantsCount = paricipantsCount;
+  public void setParticipantsCount(Integer participantsCount) {
+    this.participantsCount = participantsCount;
   }
 
   public String getLocation() {
@@ -127,12 +133,11 @@ public class Session {
   public void setLocation(String location) {
     this.location = location;
   }
-
-  public Registration getRegistrations() {
+  public List<Registration> getRegistrations() {
     return registrations;
   }
 
-  public void setRegistrations(Registration registrations) {
+  public void setRegistrations(List<Registration> registrations) {
     this.registrations = registrations;
   }
 

@@ -179,12 +179,7 @@ public class DatabaseSeeder implements CommandLineRunner {
       }
 
       // Check if session already has a registration in database
-      List<Registration> existingRegistrations = registrationRepository.findAll()
-          .stream()
-          .filter(reg -> reg.getSession().getId().equals(session.getId()))
-          .toList();
-
-      if (!existingRegistrations.isEmpty()) {
+      if (registrationRepository.existsBySessionId(session.getId())) {
         usedSessionIds.add(session.getId());
         continue;
       }
