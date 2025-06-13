@@ -40,7 +40,7 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private Role role;
 
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   @JsonIgnore
   private List<Registration> registrations;
 

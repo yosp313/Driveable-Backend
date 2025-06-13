@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,7 +36,7 @@ public class Session {
   @Column(nullable = false)
   private String location;
 
-  @OneToOne(mappedBy = "session", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @OneToOne(mappedBy = "session", fetch = FetchType.LAZY)
   @JsonIgnore
   private Registration registrations;
 

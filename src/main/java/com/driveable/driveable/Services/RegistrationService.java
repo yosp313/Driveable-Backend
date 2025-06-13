@@ -55,6 +55,7 @@ public class RegistrationService {
     return regRepo.findById(id).orElse(null);
   }
 
+  @Transactional
   public void deleteRegistration(Registration reg) {
     if (reg == null) {
       throw new IllegalArgumentException("Registration cannot be null");

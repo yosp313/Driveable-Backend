@@ -63,6 +63,7 @@ public class RegisterationController {
       return ResponseEntity.ok(Collections.singletonMap("message", "Registration deleted successfully"));
     } catch (Exception e) {
       CustomError err = new CustomError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to delete registration");
+      System.err.println("Error deleting registration: " + e.getMessage());
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
     }
   }
