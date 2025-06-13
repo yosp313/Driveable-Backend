@@ -59,7 +59,8 @@ public class AdminRegistrationController {
     }
 
     registrationService.deleteRegistration(registration);
-    return ResponseEntity.ok("Registration deleted");
+    return ResponseEntity.ok("Registration deleted" + ": " + registration.getSession().getScenario().getName() + " - "
+        + registration.getUser().getFirstName() + " " + registration.getUser().getLastName());
   }
 
 }

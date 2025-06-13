@@ -1,5 +1,7 @@
 package com.driveable.driveable.Controllers;
 
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,9 +53,7 @@ public class RegisterationController {
     }
 
     registrationService.deleteRegistration(reg);
-    System.out.println("Registration deleted: " + reg.getSession().getScenario().getName() + " - "
-        + reg.getUser().getFirstName() + " " + reg.getUser().getLastName());
-    return ResponseEntity.ok("Registration deleted");
+    return ResponseEntity.ok(Collections.singletonMap("message", "Registration deleted successfully"));
   }
 
 }

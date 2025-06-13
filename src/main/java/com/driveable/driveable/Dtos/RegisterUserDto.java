@@ -12,17 +12,17 @@ public class RegisterUserDto {
   private String lastName;
   private int age;
   private TransmissionType transmissionType;
-  private Role role;
+  private Role role = Role.USER;
 
   public RegisterUserDto(String email, String password, String firstName, String lastName, int age,
-      TransmissionType transmissionType, Role role) {
+      TransmissionType transmissionType) {
     this.email = email;
     this.password = password;
     this.firstName = firstName;
     this.lastName = lastName;
     this.age = age;
     this.transmissionType = transmissionType;
-    this.role = role;
+    this.role = Role.USER;
   }
 
   public String getEmail() {

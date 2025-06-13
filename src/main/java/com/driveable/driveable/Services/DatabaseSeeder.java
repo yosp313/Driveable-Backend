@@ -12,9 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.HashSet;
 
 @Service
 @Slf4j
@@ -67,6 +70,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         sessionRepository.count() == 0;
   }
 
+  @Transactional
   public void seedDatabase() {
     try {
       // 1. Create default admin user
@@ -119,7 +123,7 @@ public class DatabaseSeeder implements CommandLineRunner {
   }
 
   private List<User> seedUsers() {
-    // Create mixed role users: 15 regular users, 2 admins, 3 instructors
+    // Create mixed role users: 5 regular users, 1 admin, 0 instructors
     List<User> users = userFactory.createMixedRoleUsers(5, 1, 0);
 
     // Create some specific test users
@@ -140,28 +144,63 @@ public class DatabaseSeeder implements CommandLineRunner {
     return sessionRepository.saveAll(weeklySessions);
   }
 
+  @Transactional
   private void seedRegistrations(List<User> users, List<Session> sessions) {
-    // Create some sample registrations (about 30% of users register for random
-    // sessions)
+    // Filter to get only regular users
     List<User> regularUsers = users.stream()
         .filter(user -> user.getRole() == Role.USER)
         .toList();
 
-    int registrationsToCreate = Math.min(regularUsers.size() * 2, sessions.size());
+    if (regularUsers.isEmpty() || sessions.isEmpty()) {
+      log.warn("No regular users or sessions available for registration seeding");
+      return;
+    }
 
-    for (int i = 0; i < registrationsToCreate; i++) {
-      User randomUser = regularUsers.get(random.nextInt(regularUsers.size()));
-      Session randomSession = sessions.get(random.nextInt(sessions.size()));
+    // Keep track of sessions that already have registrations (OneToOne constraint)
+    Set<Long> usedSessionIds = new HashSet<>();
 
-      // Check if this user is already registered for this session
-      boolean alreadyRegistered = registrationRepository.findByUserId(randomUser.getId())
+    // Create registrations for about 50% of available sessions
+    int maxRegistrations = Math.min(sessions.size() / 2, regularUsers.size());
+    int createdRegistrations = 0;
+
+    // Shuffle sessions to get random selection
+    List<Session> shuffledSessions = sessions.stream()
+        .collect(java.util.stream.Collectors.toList());
+    java.util.Collections.shuffle(shuffledSessions);
+
+    for (Session session : shuffledSessions) {
+      if (createdRegistrations >= maxRegistrations) {
+        break;
+      }
+
+      // Skip if this session already has a registration
+      if (usedSessionIds.contains(session.getId())) {
+        continue;
+      }
+
+      // Check if session already has a registration in database
+      List<Registration> existingRegistrations = registrationRepository.findAll()
           .stream()
-          .anyMatch(reg -> reg.getSession().getId().equals(randomSession.getId()));
+          .filter(reg -> reg.getSession().getId().equals(session.getId()))
+          .toList();
 
-      if (!alreadyRegistered) {
+      if (!existingRegistrations.isEmpty()) {
+        usedSessionIds.add(session.getId());
+        continue;
+      }
+
+      // Select a random user for this session
+      User randomUser = regularUsers.get(random.nextInt(regularUsers.size()));
+
+      try {
         Registration registration = new Registration();
-        registration.setUser(randomUser);
-        registration.setSession(randomSession);
+
+        // Fetch managed entities to avoid detached entity issues
+        User managedUser = userRepository.findById(randomUser.getId()).orElse(randomUser);
+        Session managedSession = sessionRepository.findById(session.getId()).orElse(session);
+
+        registration.setUser(managedUser);
+        registration.setSession(managedSession);
         registration.setPaid(random.nextBoolean()); // 50% chance of being paid
         registration.setCompleted(random.nextBoolean() && registration.isPaid()); // Only completed if paid
         registration.setTransmissionType(random.nextBoolean() ? TransmissionType.AUTOMATIC : TransmissionType.MANUAL);
@@ -173,8 +212,21 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
 
         registrationRepository.save(registration);
+        usedSessionIds.add(session.getId());
+        createdRegistrations++;
+
+        log.debug("Created registration for user {} and session {}",
+            managedUser.getEmail(), managedSession.getId());
+
+      } catch (Exception e) {
+        log.warn("Failed to create registration for session {}: {}",
+            session.getId(), e.getMessage());
+        // Continue with next session instead of failing completely
       }
     }
+
+    log.info("Created {} registrations out of {} possible sessions",
+        createdRegistrations, sessions.size());
   }
 
   private String generateRandomFeedback() {
@@ -192,12 +244,14 @@ public class DatabaseSeeder implements CommandLineRunner {
   }
 
   // Method to manually trigger seeding (useful for testing)
+  @Transactional
   public void forceSeedDatabase() {
     log.info("Force seeding database...");
     seedDatabase();
   }
 
   // Method to clear and reseed database (useful for development)
+  @Transactional
   public void clearAndReseedDatabase() {
     log.info("Clearing and reseeding database...");
 
