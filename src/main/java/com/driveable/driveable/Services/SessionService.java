@@ -1,6 +1,9 @@
 package com.driveable.driveable.Services;
 
+import com.driveable.driveable.Dtos.SessionDto;
+import com.driveable.driveable.Models.Scenario;
 import com.driveable.driveable.Models.Session;
+import com.driveable.driveable.Repositories.ScenarioRepository;
 import com.driveable.driveable.Repositories.SessionRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +16,13 @@ import java.util.Optional;
 @Service
 @Transactional
 public class SessionService {
-  public final SessionRepository sessionRepository;
+  private final SessionRepository sessionRepository;
+  private final ScenarioRepository scenarioRepository;
 
   @Autowired
-  public SessionService(SessionRepository sessionRepository) {
+  public SessionService(SessionRepository sessionRepository, ScenarioRepository scenarioRepository) {
     this.sessionRepository = sessionRepository;
+    this.scenarioRepository = scenarioRepository;
   }
 
   public List<Session> findAll() {
@@ -31,6 +36,26 @@ public class SessionService {
 
   public Session createSession(Session session) {
     sessionRepository.save(session);
+    return session;
+  }
+
+  public Session createSessionFromDto(SessionDto sessDto) {
+    Scenario scenario = scenarioRepository.findById(sessDto.getScenarioId())
+        .orElse(null);
+    if (scenario == null) {
+      throw new IllegalArgumentException("Scenario with ID " + sessDto.getScenarioId() + " does not exist.");
+    }
+
+    Session session = new Session(
+        scenario,
+        sessDto.getDate(),
+        sessDto.getMaxParticipants(),
+        sessDto.getLocation());
+
+    System.out.println("Session: " + sessDto.getDate() + " at " + sessDto.getLocation() + " is available.");
+
+    sessionRepository.save(session);
+
     return session;
   }
 
