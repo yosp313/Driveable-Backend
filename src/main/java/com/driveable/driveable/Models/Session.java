@@ -1,7 +1,6 @@
 package com.driveable.driveable.Models;
 
 import java.util.Date;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,7 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -32,11 +31,14 @@ public class Session {
   private Date date;
 
   @Column(nullable = false)
+  private boolean isAvailable = true;
+
+  @Column(nullable = false)
   private String location;
 
-  @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToOne(mappedBy = "session", fetch = FetchType.LAZY, orphanRemoval = true)
   @JsonIgnore
-  private List<Registration> registrations;
+  private Registration registrations;
 
   public Session() {
   }
@@ -47,12 +49,14 @@ public class Session {
     this.date = date;
     this.scenario = scenario;
     this.id = id;
+    this.isAvailable = true;
   }
 
   public Session(Scenario scenario, float score, String feedback, Date date, String location) {
     this.scenario = scenario;
     this.date = date;
     this.location = location;
+    this.isAvailable = true;
   }
 
   public Long getId() {
@@ -87,4 +91,11 @@ public class Session {
     this.location = location;
   }
 
+  public boolean isAvailable() {
+    return isAvailable;
+  }
+
+  public void setAvailable(boolean isAvailable) {
+    this.isAvailable = isAvailable;
+  }
 }

@@ -16,4 +16,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
   // This will automatically create the appropriate query
   @Query("SELECT s FROM Session s WHERE LOWER(s.location) LIKE LOWER(CONCAT('%', :searchText, '%'))")
   Optional<List<Session>> searchForASession(@Param("searchText") String searchText);
+
+  @Query("SELECT s FROM Session s WHERE s.isAvailable = true")
+  Optional<List<Session>> findAvailableSessions();
 }

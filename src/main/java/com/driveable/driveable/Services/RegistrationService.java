@@ -10,25 +10,31 @@ import com.driveable.driveable.Models.Registration;
 import com.driveable.driveable.Models.Session;
 import com.driveable.driveable.Models.User;
 import com.driveable.driveable.Repositories.RegistrationRepository;
+import com.driveable.driveable.Repositories.SessionRepository;
 
 @Service
 @Transactional
 public class RegistrationService {
   private RegistrationRepository regRepo;
+  private SessionRepository sessRepo;
 
   @Autowired
-  public RegistrationService(RegistrationRepository regRepo) {
+  public RegistrationService(RegistrationRepository regRepo, SessionRepository sessRepo) {
     this.regRepo = regRepo;
+    this.sessRepo = sessRepo;
   }
 
   public Registration registerSession(Session session, User user) {
     Registration registration = new Registration();
+
+    session.setAvailable(false);
 
     registration.setSession(session);
     registration.setUser(user);
 
     try {
       regRepo.save(registration);
+      sessRepo.save(session);
       return registration;
     } catch (Exception e) {
       e.printStackTrace();

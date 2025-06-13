@@ -47,4 +47,9 @@ public class SessionService {
     Optional<List<Session>> sessions = sessionRepository.searchForASession(searchText);
     return sessions.orElse(null);
   }
+
+  public List<Session> findAvailableSessions() {
+    Optional<List<Session>> sessions = sessionRepository.findAvailableSessions();
+    return sessions.orElse(null);
+  }
 }

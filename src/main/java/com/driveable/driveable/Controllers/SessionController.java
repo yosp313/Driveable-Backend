@@ -29,7 +29,7 @@ public class SessionController {
 
   @GetMapping
   public List<Session> GetAllSessions() {
-    return sessionService.findAll();
+    return sessionService.findAvailableSessions();
   }
 
   @GetMapping("/search")
@@ -76,5 +76,6 @@ public class SessionController {
 
     return ResponseEntity.status(HttpStatus.CREATED).body(registration);
   }
+
 
 }

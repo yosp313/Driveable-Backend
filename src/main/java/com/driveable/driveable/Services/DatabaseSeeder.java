@@ -125,8 +125,6 @@ public class DatabaseSeeder implements CommandLineRunner {
     // Create some specific test users
     users.add(userFactory.createUserWithSpecificData("John", "Doe", "john.doe@test.com", Role.USER));
     users.add(userFactory.createUserWithSpecificData("Jane", "Smith", "jane.smith@test.com", Role.USER));
-    users
-        .add(userFactory.createUserWithSpecificData("Mike", "Johnson", "mike.johnson@instructor.com", Role.INSTRUCTOR));
 
     return userRepository.saveAll(users);
   }
