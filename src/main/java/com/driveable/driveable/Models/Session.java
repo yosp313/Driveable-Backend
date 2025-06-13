@@ -12,7 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -34,29 +34,42 @@ public class Session {
   private boolean isAvailable = true;
 
   @Column(nullable = false)
+  private Integer maxParticipants;
+
+  @Column(nullable = false)
+  private Integer paricipantsCount = 0;
+
+  @Column(nullable = false)
   private String location;
 
-  @OneToOne(mappedBy = "session", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
   @JsonIgnore
   private Registration registrations;
 
   public Session() {
   }
 
-  public Session(String location, Date date, String feedback, float score, Scenario scenario,
-      Long id) {
-    this.location = location;
-    this.date = date;
+  public Session(Scenario scenario, Date date, Integer maxParticipants,
+      String location, Registration registrations) {
     this.scenario = scenario;
-    this.id = id;
+    this.date = date;
     this.isAvailable = true;
+    this.maxParticipants = maxParticipants;
+    this.paricipantsCount = 0;
+    this.location = location;
+    this.registrations = registrations;
   }
 
-  public Session(Scenario scenario, float score, String feedback, Date date, String location) {
+  public Session(Long id, Scenario scenario, Date date, Integer maxParticipants, String location,
+      Registration registrations) {
+    this.id = id;
     this.scenario = scenario;
     this.date = date;
-    this.location = location;
     this.isAvailable = true;
+    this.maxParticipants = maxParticipants;
+    this.paricipantsCount = 0;
+    this.location = location;
+    this.registrations = registrations;
   }
 
   public Long getId() {
@@ -83,6 +96,30 @@ public class Session {
     this.date = date;
   }
 
+  public boolean isAvailable() {
+    return isAvailable;
+  }
+
+  public void setAvailable(boolean isAvailable) {
+    this.isAvailable = isAvailable;
+  }
+
+  public Integer getMaxParticipants() {
+    return maxParticipants;
+  }
+
+  public void setMaxParticipants(Integer maxParticipants) {
+    this.maxParticipants = maxParticipants;
+  }
+
+  public Integer getParicipantsCount() {
+    return paricipantsCount;
+  }
+
+  public void setParicipantsCount(Integer paricipantsCount) {
+    this.paricipantsCount = paricipantsCount;
+  }
+
   public String getLocation() {
     return location;
   }
@@ -91,11 +128,12 @@ public class Session {
     this.location = location;
   }
 
-  public boolean isAvailable() {
-    return isAvailable;
+  public Registration getRegistrations() {
+    return registrations;
   }
 
-  public void setAvailable(boolean isAvailable) {
-    this.isAvailable = isAvailable;
+  public void setRegistrations(Registration registrations) {
+    this.registrations = registrations;
   }
+
 }

@@ -27,7 +27,10 @@ public class RegistrationService {
   public Registration registerSession(Session session, User user) {
     Registration registration = new Registration();
 
-    session.setAvailable(false);
+    if (session.getParicipantsCount() >= session.getMaxParticipants()) {
+      session.setAvailable(false);
+    }
+    session.setParicipantsCount(session.getParicipantsCount() + 1);
 
     registration.setSession(session);
     registration.setUser(user);
@@ -60,19 +63,18 @@ public class RegistrationService {
     if (reg == null) {
       throw new IllegalArgumentException("Registration cannot be null");
     }
-    // Get the associated session before deleting
-    System.out.println("Session with ID: " + reg.getSession().getId());
+
+    Long sessionId = reg.getSession() != null ? reg.getSession().getId() : null;
 
     // Delete the registration first
     regRepo.delete(reg);
 
-    regRepo.flush();
-
-    Session session = sessRepo.findById(reg.getSession().getId()).orElse(null);
-    // Make the session available again
-    if (session != null) {
-      session.setAvailable(true);
-      sessRepo.save(session);
+    // If there was an associated session, make it available again
+    if (sessionId != null) {
+      sessRepo.findById(sessionId).ifPresent(session -> {
+        session.setAvailable(true);
+        sessRepo.save(session);
+      });
     }
 
   }
