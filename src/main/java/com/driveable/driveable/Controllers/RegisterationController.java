@@ -44,7 +44,7 @@ public class RegisterationController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> DeleteRegistrationById(@PathVariable Long id) {
+  public ResponseEntity<?> DeleteRegistrationById(@PathVariable Long id, @AuthenticationPrincipal User user) {
     Registration reg = registrationService.findRegistrationById(id);
 
     if (reg == null) {
@@ -52,8 +52,19 @@ public class RegisterationController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }
 
-    registrationService.deleteRegistration(reg);
-    return ResponseEntity.ok(Collections.singletonMap("message", "Registration deleted successfully"));
+    if (!reg.getUser().getId().equals(user.getId())) {
+      CustomError err = new CustomError(HttpStatus.FORBIDDEN.value(),
+          "You are not allowed to delete this registration");
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+    }
+
+    try {
+      registrationService.deleteRegistration(reg);
+      return ResponseEntity.ok(Collections.singletonMap("message", "Registration deleted successfully"));
+    } catch (Exception e) {
+      CustomError err = new CustomError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to delete registration");
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
+    }
   }
 
 }
