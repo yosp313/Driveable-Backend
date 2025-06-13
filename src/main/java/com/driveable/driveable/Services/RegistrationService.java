@@ -56,22 +56,20 @@ public class RegistrationService {
   }
 
   public void deleteRegistration(Registration reg) {
-    try {
-      // Get the associated session before deleting
-      Session session = reg.getSession();
-
-      // Make the session available again
-      if (session != null) {
-        session.setAvailable(true);
-        sessRepo.save(session);
-      }
-
-      // Delete the registration first
-      regRepo.delete(reg);
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      return;
+    if (reg == null) {
+      throw new IllegalArgumentException("Registration cannot be null");
     }
+    // Get the associated session before deleting
+    Session session = reg.getSession();
+
+    // Delete the registration first
+    regRepo.delete(reg);
+
+    // Make the session available again
+    if (session != null) {
+      session.setAvailable(true);
+      sessRepo.save(session);
+    }
+
   }
 }
