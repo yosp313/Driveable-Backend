@@ -78,4 +78,12 @@ public class RegistrationService {
     }
 
   }
+
+  public void updateRegistrationScore(Registration reg, Integer score) {
+    if (reg == null) {
+      throw new IllegalArgumentException("Registration cannot be null");
+    }
+    reg.setScore(score);
+    regRepo.save(reg);
+  }
 }

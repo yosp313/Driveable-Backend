@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.service.annotation.PutExchange;
 
 import com.driveable.driveable.Models.Registration;
 import com.driveable.driveable.Models.User;
@@ -64,6 +65,32 @@ public class RegisterationController {
     } catch (Exception e) {
       CustomError err = new CustomError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to delete registration");
       System.err.println("Error deleting registration: " + e.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
+    }
+  }
+
+  @PutExchange("/{id}/score")
+  public ResponseEntity<?> UpdateRegistrationScore(@PathVariable Long id, @AuthenticationPrincipal User user,
+      Integer score) {
+    Registration reg = registrationService.findRegistrationById(id);
+
+    if (reg == null) {
+      CustomError err = new CustomError(HttpStatus.NOT_FOUND.value(), "Registration not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+    }
+
+    if (!reg.getUser().getId().equals(user.getId())) {
+      CustomError err = new CustomError(HttpStatus.FORBIDDEN.value(),
+          "You are not allowed to update this registration");
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+    }
+
+    try {
+      registrationService.updateRegistrationScore(reg, score);
+      return ResponseEntity.ok(Collections.singletonMap("message", "Registration score updated successfully"));
+    } catch (Exception e) {
+      CustomError err = new CustomError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to update registration");
+      System.err.println("Error updating registration score: " + e.getMessage());
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
     }
   }
